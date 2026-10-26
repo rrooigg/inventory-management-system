@@ -15,6 +15,7 @@ class Supplier(BaseModel):
   phone_number: str
 
 class Product(BaseModel):
+  name: str
   in_stock: int
   sold: int
   unit_price: int
@@ -97,6 +98,7 @@ def delete_supplier(supplier_id: int, db: DbSession):
 @app.post('/products')
 def add_product(product: Product, db: DbSession):
   db_product= models.Product(
+    name= product.name,
     in_stock= product.in_stock,
     sold= product.sold,
     unit_price= product.unit_price
@@ -129,6 +131,7 @@ def update_product(product_id: int, product: Product, db: DbSession):
   if not db_product:
     raise HTTPException(status_code=404, detail='Product not found')
 
+  db_product.name= product.name
   db_product.in_stock= product.in_stock
   db_product.sold= product.sold
   db_product.unit_price= product.unit_price
