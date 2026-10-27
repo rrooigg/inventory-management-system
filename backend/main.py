@@ -15,10 +15,11 @@ class Supplier(BaseModel):
   phone_number: str
 
 class Product(BaseModel):
-  name: str
+  product_name: str
   in_stock: int
   sold: int
   unit_price: int
+  supplier_id: str
 
 
 origins= [
@@ -98,10 +99,11 @@ def delete_supplier(supplier_id: int, db: DbSession):
 @app.post('/products')
 def add_product(product: Product, db: DbSession):
   db_product= models.Product(
-    name= product.name,
+    product_name= product.product_name,
     in_stock= product.in_stock,
     sold= product.sold,
-    unit_price= product.unit_price
+    unit_price= product.unit_price,
+    supplier_id= product.supplier_id
   )
   if db_product:
     raise HTTPException(status_code=400, detail='Product already exists')
@@ -131,10 +133,11 @@ def update_product(product_id: int, product: Product, db: DbSession):
   if not db_product:
     raise HTTPException(status_code=404, detail='Product not found')
 
-  db_product.name= product.name
+  db_product.product_name= product.product_name
   db_product.in_stock= product.in_stock
   db_product.sold= product.sold
   db_product.unit_price= product.unit_price
+  db_product.supplier_id= product.supplier_id
 
   db.commit()
   db.refresh(db_product)
